@@ -20,7 +20,7 @@ class TradingAnalysisViewModel() : ViewModel() {
 
 
     var dailyVolumeTrend = calculateDailyVolumeTrend()
-    var transactionAmountDistribution = calculateTransactionAmountDistribution()
+    var transactionAmountDistribution: Map<TradeSide, Double> = calculateTransactionAmountDistribution()
     var userActivePeriods = calculateUserActivePeriods()
     var userCategoryPreferences = calculateUserCategoryPreferences()
     var monthlyTransactionAnalysis = calculateMonthlyTransactionAnalysis()
@@ -68,19 +68,20 @@ class TradingAnalysisViewModel() : ViewModel() {
             }
     }
 
-    private fun calculateUserActivePeriods(): List<Pair<String, Int>> {
+    private fun calculateUserActivePeriods(): List<Pair<String, Double>> {
         return _state.value.tradingData.groupBy { it.createdAt.substring(11, 13) } // Group by hour
-            .map { (hour, entries) -> hour to entries.size }
+            .map { (hour, entries) -> hour to entries.size.toDouble() }
+            .sortedBy { it.first }
     }
 
-    private fun calculateUserCategoryPreferences(): Map<String, Int> {
+    private fun calculateUserCategoryPreferences(): Map<String, Double> {
         return _state.value.tradingData.groupBy { it.symbol }
-            .mapValues { (_, entries) -> entries.size }
+            .mapValues { (_, entries) -> entries.size.toDouble()  }
     }
 
-    private fun calculateMonthlyTransactionAnalysis(): Map<String, Int> {
+    private fun calculateMonthlyTransactionAnalysis(): Map<String, Double> {
         return _state.value.tradingData.groupBy { it.createdAt.substring(0, 7) } // Group by year-month
-            .mapValues { (_, entries) -> entries.size }
+            .mapValues { (_, entries) -> entries.size.toDouble()  }
     }
 
     private fun calculateProfitLossDistribution(): Map<TradeSide, Double> {

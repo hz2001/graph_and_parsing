@@ -11,8 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
-import ir.ehsannarmani.compose_charts.*
-import ir.ehsannarmani.compose_charts.models.*
+//import ir.ehsannarmani.compose_charts.*
+//import ir.ehsannarmani.compose_charts.models.*
+
+import co.yml.ycharts.app.presentation.*
+import co.yml.ycharts.app.ui.theme.YChartsTheme
 
 
 import androidx.compose.foundation.layout.*
@@ -22,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
+import co.yml.charts.ui.linechart.LineChart
+import com.example.graph_and_parsing.domain.model.TradeSide
 
 
 @Composable
@@ -66,26 +71,36 @@ fun TradingAnalysisScreen(viewModel: TradingAnalysisViewModel) {
         // Charts
         if (state.showDailyVolumeTrend) {
             Log.d("testing", "TradingAnalysisScreen: ${viewModel.dailyVolumeTrend}")
-            MyLineChart(title = "每日交易量趋势", data = viewModel.dailyVolumeTrend)
+            MyYChartsLineChart(title = "每日交易量趋势", data = viewModel.dailyVolumeTrend)
         }
         if (state.showTransactionAmountDistribution) {
-            Text("交易金额分布")
+            Log.d("testing", "transactionAmountDistribution: ${viewModel.transactionAmountDistribution}")
+            MyYChartsRowChart(title = "交易金额分布", data = viewModel.transactionAmountDistribution)
 //            Chart(title = "交易金额分布", data = viewModel.transactionAmountDistribution.entries.toList())
         }
         if (state.showUserActivePeriods) {
             Text("用户活跃时间段")
+            Log.d("testing", "userActivePeriods: ${viewModel.userActivePeriods}")
+            MyYChartsColumnChart(title = "用户活跃时间段", data = viewModel.userActivePeriods)
 //            Chart(title = "用户活跃时间段", data = viewModel.userActivePeriods)
         }
         if (state.showUserCategoryPreferences) {
             Text("用户交易品类偏好")
+            Log.d("testing", "userCategoryPreferences: ${viewModel.userCategoryPreferences}")
+
+            YChartsUserCategoryPreferences(title = "用户交易品类偏好", data = viewModel.userCategoryPreferences)
 //            Chart(title = "用户交易品类偏好", data = viewModel.userCategoryPreferences.entries.toList())
         }
         if (state.showMonthlyTransactionAnalysis) {
             Text("用户月度交易行为分析")
+            Log.d("testing", "monthlyTransactionAnalysis: ${viewModel.monthlyTransactionAnalysis}")
+            MyYChartsColumnChart(title = "用户月度交易行为分析", data = viewModel.monthlyTransactionAnalysis.toList())
 //            Chart(title = "用户月度交易行为分析", data = viewModel.monthlyTransactionAnalysis.entries.toList())
         }
         if (state.showProfitLossDistribution) {
             Text("交易盈亏分布")
+            Log.d("testing", "profitLossDistribution: ${viewModel.profitLossDistribution}")
+            MyYChartsRowChart(title = "交易盈亏分布", data = viewModel.profitLossDistribution)
 //            Chart(title = "交易盈亏分布", data = viewModel.profitLossDistribution.entries.toList())
         }
     }
@@ -113,8 +128,36 @@ fun CheckboxWithLabel(
     }
 }
 
+//@Composable
+//fun MyLineChart(title: String, data: List<Pair<String, Double>>) {
+//    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+//        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+//        // Placeholder for actual chart
+//        data.map { it.second }.maxOrNull()?.let {
+//            LineChart(
+//                data = remember {
+//                    listOf(
+//                        Line(
+//                            label = "not Temperature",
+//    //                        values = listOf(28.0, 41.0, -5.0, 10.0, 35.0),
+//                            values = data.map { it.second },
+//                            color = SolidColor(Color.Red)
+//                    ),
+//                    )
+//                },
+//                zeroLineProperties = ZeroLineProperties(
+//                    enabled = true,
+//                    color = SolidColor(Color.Red),
+//                ),
+//                minValue = 0.0,
+//                maxValue = it + 100
+//            )
+//        }
+//    }
+//}
+
 @Composable
-fun MyLineChart(title: String, data: List<Pair<String, Double>>) {
+fun MyYChartsLineChart(title: String, data: List<Pair<String, Double>>) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
         Text(text = title, style = MaterialTheme.typography.bodyMedium)
         // Placeholder for actual chart
@@ -123,11 +166,11 @@ fun MyLineChart(title: String, data: List<Pair<String, Double>>) {
                 data = remember {
                     listOf(
                         Line(
-                            label = "Temperature",
-    //                        values = listOf(28.0, 41.0, -5.0, 10.0, 35.0),
+                            label = "not Temperature",
+                            //                        values = listOf(28.0, 41.0, -5.0, 10.0, 35.0),
                             values = data.map { it.second },
                             color = SolidColor(Color.Red)
-                    ),
+                        ),
                     )
                 },
                 zeroLineProperties = ZeroLineProperties(
@@ -141,4 +184,157 @@ fun MyLineChart(title: String, data: List<Pair<String, Double>>) {
     }
 }
 
+//@Composable
+//fun MyColumnChart(title: String, data: List<Pair<String, Double>>) {
+//    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+//        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+//        // Placeholder for actual chart
+//        data.map { it.second }.maxOrNull()?.let {
+//            ColumnChart(
+//                data = remember {
+//                    data.map{
+//                        Bars(
+//                            label = it.first,
+//                            values = listOf(Bars.Data(label = "Linux", value = it.second, color = SolidColor(Color.Red)))
+//                        )
+//                    }
+//                },
+//                barProperties = BarProperties(
+//                    cornerRadius = Bars.Data.Radius.Rectangle(topRight = 6.dp, topLeft = 6.dp),
+//                    spacing = 3.dp,
+//                    thickness = 20.dp
+//                ),
+//            )
+//        }
+//    }
+//}
+
+@Composable
+fun MyYChartsColumnChart(title: String, data: List<Pair<String, Double>>) {
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+        // Placeholder for actual chart
+        data.map { it.second }.maxOrNull()?.let {
+            ColumnChart(
+                data = remember {
+                    data.map{
+                        Bars(
+                            label = it.first,
+                            values = listOf(Bars.Data(label = "Linux", value = it.second, color = SolidColor(Color.Red)))
+                        )
+                    }
+                },
+                barProperties = BarProperties(
+                    cornerRadius = Bars.Data.Radius.Rectangle(topRight = 6.dp, topLeft = 6.dp),
+                    spacing = 3.dp,
+                    thickness = 20.dp
+                ),
+            )
+        }
+    }
+}
+
+//@Composable
+//fun MyRowChart(title: String, data: Map<TradeSide, Double>) {
+//    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+//        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+//        data.entries.map { it.value }.minOrNull()?.let {
+//            RowChart(
+//                data = remember {
+//                    data.entries.mapIndexed { index, entry ->
+//                        val color =
+//                            if (entry.key == TradeSide.BUY) SolidColor(Color.Blue) else SolidColor(
+//                                Color.Red
+//                            )
+//                        Bars(
+//                            label = (index + 1).toString(), // Labels as 1, 2, ...
+//                            values = listOf(
+//                                Bars.Data(value = entry.value, color = color)
+//                            )
+//                        )
+//                    }
+//                },
+////                maxValue = 75.0,
+//                minValue = it
+//            )
+//        }
+//    }
+//}
+
+@Composable
+fun MyYChartsRowChart(title: String, data: Map<TradeSide, Double>) {
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+        data.entries.map { it.value }.minOrNull()?.let {
+            RowChart(
+                data = remember {
+                    data.entries.mapIndexed { index, entry ->
+                        val color =
+                            if (entry.key == TradeSide.BUY) SolidColor(Color.Blue) else SolidColor(
+                                Color.Red
+                            )
+                        Bars(
+                            label = (index + 1).toString(), // Labels as 1, 2, ...
+                            values = listOf(
+                                Bars.Data(value = entry.value, color = color)
+                            )
+                        )
+                    }
+                },
+//                maxValue = 75.0,
+                minValue = it
+            )
+        }
+    }
+}
+
+//@Composable
+//fun userCategoryPreferences(title: String, data: Map<String, Double>) {
+//    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+//        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+//        data.entries.map { it.value }.minOrNull()?.let {
+//            RowChart(
+//                data = remember {
+//                    data.entries.mapIndexed { index, entry ->
+////                        val color = SolidColor(Color.Blue)
+////                        val color = SolidColor(Color(entry.key.hashCode()))
+//                        Bars(
+//                            label = entry.key, // Labels as 1, 2, ...
+//                            values = listOf(
+//                                Bars.Data(value = entry.value, color = SolidColor(Color.Blue))
+//                            )
+//                        )
+//                    }
+//                },
+////                maxValue = 75.0,
+//                minValue = 0.0
+//            )
+//        }
+//    }
+//}
+
+@Composable
+fun YChartsUserCategoryPreferences(title: String, data: Map<String, Double>) {
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+        data.entries.map { it.value }.minOrNull()?.let {
+            RowChart(
+                data = remember {
+                    data.entries.mapIndexed { index, entry ->
+//                        val color = SolidColor(Color.Blue)
+//                        val color = SolidColor(Color(entry.key.hashCode()))
+                        Bars(
+                            label = entry.key, // Labels as 1, 2, ...
+                            values = listOf(
+                                Bars.Data(value = entry.value, color = SolidColor(Color.Blue))
+                            )
+                        )
+                    }
+                },
+//                maxValue = 75.0,
+                minValue = 0.0
+            )
+        }
+    }
+}
 

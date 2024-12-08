@@ -17,10 +17,6 @@ import com.example.graph_and_parsing.ui.theme.Graph_and_parsingTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.dp
 
-// Compose Charts
-import ir.ehsannarmani.compose_charts.*
-import ir.ehsannarmani.compose_charts.models.*
-
 // Android tool
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring

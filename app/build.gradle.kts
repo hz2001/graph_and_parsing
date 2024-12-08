@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.example.graph_and_parsing"
-    compileSdk = 35
+    compileSdk = 32
 
     defaultConfig {
         applicationId = "com.example.graph_and_parsing"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
 
@@ -75,11 +75,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation("com.opencsv:opencsv:5.5.2")
-    implementation("io.github.ehsannarmani:compose-charts:0.0.19")
+//    implementation("io.github.ehsannarmani:compose-charts:0.0.19")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+
+    // use the ycharts to draw graphs for the android downgrade
+    implementation(libs.ycharts)
 
 //    implementation("com.google.dagger:hilt-android:2.48")
 //    kapt("com.google.dagger:hilt-compiler:2.48")
